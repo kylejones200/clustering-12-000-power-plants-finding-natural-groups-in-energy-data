@@ -1,28 +1,24 @@
+---
+author: "Kyle Jones"
+date_published: "October 6, 2025"
+date_exported_from_medium: "November 10, 2025"
+canonical_link: "https://medium.com/@kyle-t-jones/clustering-12-000-power-plants-finding-natural-groups-in-energy-data-0e58e8803b03"
+---
+
 # Clustering 12,000 Power Plants: Finding Natural Groups in Energy Data Using K-Means, GMM, and HDBSCAN to segment power plants for
 benchmarking, policy targeting, and competitive intelligence
 
 ### Clustering 12,613 Power Plants: Finding Natural Groups in Energy Data
 #### *Using K-Means, GMM, and HDBSCAN to segment power plants for benchmarking, policy targeting, and competitive intelligence*
-Not all power plants are created equal. A 1,000 MW nuclear plant
-operating at 92% capacity has nothing in common with a 10 MW solar farm
-running at 25% capacity. Yet both exist in the same dataset, and
-comparing them directly is meaningless.
+Not all power plants are created equal. A 1,000 MW nuclear plant operating at 92% capacity has nothing in common with a 10 MW solar farm running at 25% capacity. Yet both exist in the same dataset, and comparing them directly is meaningless.
 
-Clustering solves this. It automatically groups similar plants together,
-then we can analyze the groups. This reveals insights impossible to see
-in aggregate data --- like identifying that certain natural gas plants
-are 20% more efficient than their peers, or that some states have
-systematically cleaner electricity portfolios.
+Clustering solves this. It automatically groups similar plants together, then we can analyze the groups. This reveals insights impossible to see in aggregate data --- like identifying that certain natural gas plants are 20% more efficient than their peers, or that some states have systematically cleaner electricity portfolios.
 
-This article demonstrates five clustering methods on 12,613 U.S. power
-plants, showing how to find natural groupings, profile clusters, and
-apply results to real-world problems like benchmarking and policy
-targeting.
+This article demonstrates five clustering methods on 12,613 U.S. power plants, showing how to find natural groupings, profile clusters, and apply results to real-world problems like benchmarking and policy targeting.
 
 
 ### The Dataset and Feature Engineering
-Using EPA eGRID 2023 data with 12,613 power plants, we create features
-that capture operational characteristics:
+Using EPA eGRID 2023 data with 12,613 power plants, we create features that capture operational characteristics:
 
 ```python
 import pandas as pd
@@ -51,21 +47,17 @@ X = plants_2023[features].dropna()
 print(f"Clustering {len(X):,} plants on {len(features)} features")
 ```
 
-*The data and code for this project are in*
-[*Github*](https://github.com/kylejones200/electric_utilities)*.*
+*The data and code for this project are in* [*Github*](https://github.com/kylejones200/electric_utilities)*.*
 
 Why These Features?
 
-- Log generation & CO2: Captures plant size (log-transform handles huge
-  range)
-- Carbon intensity: Emissions per unit output (distinguishes clean vs
-  dirty)
+- Log generation & CO2: Captures plant size (log-transform handles huge range)
+- Carbon intensity: Emissions per unit output (distinguishes clean vs dirty)
 - Capacity factor: Utilization rate (baseload vs peaking)
 - NOx/SO2 intensities: Additional pollution dimensions
 
 ### Method 1: K-Means Clustering
-K-Means is the workhorse of clustering: fast, interpretable, and works
-well when clusters are roughly spherical.
+K-Means is the workhorse of clustering: fast, interpretable, and works well when clusters are roughly spherical.
 
 ### Finding Optimal K
 How many clusters? Try different values and evaluate:
@@ -104,9 +96,7 @@ K=6: Silhouette=0.341
 K=7: Silhouette=0.329
 ```
 
-Interpretation: The elbow occurs around K=5. Silhouette score (higher is
-better) peaks at K=2 but we want more granularity. K=5 balances
-interpretability and cluster quality.
+Interpretation: The elbow occurs around K=5. Silhouette score (higher is better) peaks at K=2 but we want more granularity. K=5 balances interpretability and cluster quality.
 
 ### Training Final Model
 ``` 
@@ -130,8 +120,7 @@ Cluster 4: 1,594 plants
 ```
 
 ### Cluster Profiling: What Do These Groups Mean?
-The magic happens when we profile each cluster to understand what makes
-it unique:
+The magic happens when we profile each cluster to understand what makes it unique:
 
 ``` 
 # Calculate cluster statistics
@@ -153,16 +142,14 @@ Cluster 0: "Large Coal Baseload" (2,847 plants)
 - Median carbon intensity: 1.02 tons/MWh
 - Median capacity factor: 0.61
 - Median capacity: 385 MW
-- Profile: Traditional coal plants, high emissions, steady
-  operation
+- Profile: Traditional coal plants, high emissions, steady operation
 
 Cluster 1: "Natural Gas Combined Cycle" (3,124 plants)
 
 - Median carbon intensity: 0.42 tons/MWh
 - Median capacity factor: 0.48
 - Median capacity: 245 MW
-- Profile: Modern gas plants, moderate emissions, flexible
-  operation
+- Profile: Modern gas plants, moderate emissions, flexible operation
 
 Cluster 2: "Renewable Energy" (1,892 plants)
 
@@ -185,15 +172,12 @@ Cluster 4: "Nuclear Baseload" (1,594 plants)
 - Median capacity: 1,100 MW
 - Profile: Large nuclear, ultra-clean, always-on
 
-These profiles make intuitive sense! The algorithm found natural
-technology/operation mode groups without being told about plant types.
+These profiles make intuitive sense! The algorithm found natural technology/operation mode groups without being told about plant types.
 
 ### Method 2: Gaussian Mixture Models (GMM)
-K-Means assigns each plant to exactly one cluster. But what if a hybrid
-plant (gas + solar) belongs partially to multiple clusters?
+K-Means assigns each plant to exactly one cluster. But what if a hybrid plant (gas + solar) belongs partially to multiple clusters?
 
-GMM provides soft clustering --- each plant has a probability of
-belonging to each cluster.
+GMM provides soft clustering --- each plant has a probability of belonging to each cluster.
 
 ```python
 from sklearn.mixture import GaussianMixture
@@ -232,14 +216,10 @@ print("These plants have characteristics of multiple clusters")
 # This might be a gas plant with significant renewable co-generation
 ```
 
-GMM found 342 plants with uncertain membership (probability \< 0.7).
-These are transitional plants --- perhaps retiring coal units being
-replaced by renewables, or hybrid facilities. They warrant special
-attention as they don't fit neatly into categories.
+GMM found 342 plants with uncertain membership (probability \< 0.7). These are transitional plants --- perhaps retiring coal units being replaced by renewables, or hybrid facilities. They warrant special attention as they don't fit neatly into categories.
 
 ### Method 3: HDBSCAN --- Letting Data Decide Cluster Count
-HDBSCAN (Hierarchical Density-Based Spatial Clustering) automatically
-determines the number of clusters and identifies outliers.
+HDBSCAN (Hierarchical Density-Based Spatial Clustering) automatically determines the number of clusters and identifies outliers.
 
 ```python
 import hdbscan
@@ -265,17 +245,13 @@ Outliers/noise: 423 plants (3.4%)
 
 Why More Clusters?
 
-HDBSCAN found 7 clusters vs our choice of 5 for K-Means. It split some
-groups further:
+HDBSCAN found 7 clusters vs our choice of 5 for K-Means. It split some groups further:
 
-- Natural gas split into "high-efficiency CCGT" vs "older simple
-  cycle"
+- Natural gas split into "high-efficiency CCGT" vs "older simple cycle"
 - Renewables split into "wind" vs "solar" vs "hydro"
-- Identified 423 outliers --- unusual plants that don't fit any
-  cluster
+- Identified 423 outliers --- unusual plants that don't fit any cluster
 
-The 423 outliers are valuable! These are plants with unique
-characteristics:
+The 423 outliers are valuable! These are plants with unique characteristics:
 
 - Experimental technologies (geothermal, wave power)
 - Plants in transition (adding/retiring units)
@@ -283,8 +259,7 @@ characteristics:
 - Data quality issues requiring investigation
 
 ### Visualizing High-Dimensional Clusters
-6-dimensional data is hard to visualize. Solution: dimensionality
-reduction.
+6-dimensional data is hard to visualize. Solution: dimensionality reduction.
 
 ### PCA (Principal Component Analysis)
 ```python
@@ -307,8 +282,7 @@ PC2 explains 28.7% of variance
 Total: 71.0%
 ```
 
-71% of the information compressed into 2 dimensions! Not perfect, but
-good enough for visualization.
+71% of the information compressed into 2 dimensions! Not perfect, but good enough for visualization.
 
 ### t-SNE for Better Separation
 ```python
@@ -340,9 +314,7 @@ plt.tight_layout()
 plt.savefig('cluster_visualization.png', dpi=150)
 ```
 
-t-SNE shows better cluster separation than PCA --- clusters are more
-visually distinct. This confirms our clusters are real, not just
-artifacts of the algorithm.
+t-SNE shows better cluster separation than PCA --- clusters are more visually distinct. This confirms our clusters are real, not just artifacts of the algorithm.
 
 ### Practical Application 1: Benchmarking
 With clusters defined, we can benchmark performance within peer groups:
@@ -384,16 +356,14 @@ Performance: -5.2% vs peers (5.2% BETTER)
 Percentile: 32nd
 ```
 
-This plant is performing better than 68% of similar coal plants.
-Valuable insight for:
+This plant is performing better than 68% of similar coal plants. Valuable insight for:
 
 - Operators: Identify what's working well here
 - Regulators: Set achievable targets based on peer performance
 - Investors: Value assets relative to competitors
 
 ### Practical Application 2: Policy Targeting
-States with similar plant mixes should get similar policies. Cluster
-states by their generation portfolio:
+States with similar plant mixes should get similar policies. Cluster states by their generation portfolio:
 
 ``` 
 # Aggregate to state level
@@ -422,17 +392,12 @@ for i in range(4):
 
 Output might show:
 
-- State Cluster 0: WY, WV, KY (high coal, need transition
-  support)
-- State Cluster 1: CA, OR, WA (high renewables, focus on
-  integration/storage)
-- State Cluster 2: TX, PA, OH (balanced mix, optimize existing
-  fleet)
-- State Cluster 3: VT, ID (high hydro/nuclear, maintain
-  reliability)
+- State Cluster 0: WY, WV, KY (high coal, need transition support)
+- State Cluster 1: CA, OR, WA (high renewables, focus on integration/storage)
+- State Cluster 2: TX, PA, OH (balanced mix, optimize existing fleet)
+- State Cluster 3: VT, ID (high hydro/nuclear, maintain reliability)
 
-Each cluster needs different policy interventions. One-size-fits-all
-policies fail.
+Each cluster needs different policy interventions. One-size-fits-all policies fail.
 
 ### Practical Application 3: Market Segmentation
 Understanding competitive dynamics:
@@ -461,8 +426,7 @@ for i, (idx, dist) in enumerate(zip(similar_idx, similar_dist), 1):
           f"Distance: {dist:.3f}")
 ```
 
-This identifies direct competitors --- plants so similar they likely
-compete for the same market positions and customers.
+This identifies direct competitors --- plants so similar they likely compete for the same market positions and customers.
 
 ### Key Lessons Learned
 1\. Multiple methods reveal different insights:
@@ -474,15 +438,13 @@ compete for the same market positions and customers.
 2\. Feature engineering is crucial:
 
 - Log transforms handle skewed distributions
-- Ratios (carbon intensity, capacity factor) capture operational
-  modes
+- Ratios (carbon intensity, capacity factor) capture operational modes
 - Standardization essential for distance-based methods
 
 3\. Domain knowledge validates results:
 
 - Clusters should make sense (they did!)
-- If clusters are unintuitive, revisit features or
-  preprocessing
+- If clusters are unintuitive, revisit features or preprocessing
 - Profile clusters thoroughly before using them
 
 4\. Clustering enables targeted analysis:
@@ -499,54 +461,25 @@ compete for the same market positions and customers.
 - Often the most interesting plants
 
 ### So What?
-Clustering transforms 12,613 individual plants into 5--7 manageable
-groups. This enables:
+Clustering transforms 12,613 individual plants into 5--7 manageable groups. This enables:
 
-Better benchmarking: Compare plants to appropriate peers, not the entire
-fleet. A 5% improvement vs cluster peers is meaningful; vs all plants is
-not.
+Better benchmarking: Compare plants to appropriate peers, not the entire fleet. A 5% improvement vs cluster peers is meaningful; vs all plants is not.
 
-Targeted policies: Design interventions for specific plant types. Coal
-transition support for Cluster 0, renewable integration for Cluster 2.
+Targeted policies: Design interventions for specific plant types. Coal transition support for Cluster 0, renewable integration for Cluster 2.
 
-Market intelligence: Understand competitive landscape. Who are your true
-competitors? Where are the opportunities?
+Market intelligence: Understand competitive landscape. Who are your true competitors? Where are the opportunities?
 
-Investment decisions: Is a target plant typical or unusual for its
-cluster? Unusual isn't bad --- could be better or worse --- but needs
-explanation.
+Investment decisions: Is a target plant typical or unusual for its cluster? Unusual isn't bad --- could be better or worse --- but needs explanation.
 
-Operational insights: Best practices from top performers in each cluster
-can be shared with others in that cluster (similar
-technology/constraints).
+Operational insights: Best practices from top performers in each cluster can be shared with others in that cluster (similar technology/constraints).
 
-The methods demonstrated here --- K-Means for speed, GMM for
-uncertainty, HDBSCAN for flexibility --- provide a comprehensive toolkit
-for segmenting any complex dataset. Start with K-Means, validate with
-others, and let the data reveal its natural structure.
+The methods demonstrated here --- K-Means for speed, GMM for uncertainty, HDBSCAN for flexibility --- provide a comprehensive toolkit for segmenting any complex dataset. Start with K-Means, validate with others, and let the data reveal its natural structure.
 
 ### A message from our Founder
-**Hey,**
-[**Sunil**](https://linkedin.com/in/sunilsandhu) **here.** I wanted
-to take a moment to thank you for reading until the end and for being a
-part of this community.
+**Hey,** [**Sunil**](https://linkedin.com/in/sunilsandhu) **here.** I wanted to take a moment to thank you for reading until the end and for being a part of this community.
 
-Did you know that our team run these publications as a volunteer effort
-to over 3.5m monthly readers? **We don't receive any funding, we do this
-to support the community. ❤️**
+Did you know that our team run these publications as a volunteer effort to over 3.5m monthly readers? **We don't receive any funding, we do this to support the community. ❤️**
 
-If you want to show some love, please take a moment to **follow me on**
-[**LinkedIn**](https://linkedin.com/in/sunilsandhu)**,**
-[**TikTok**](https://tiktok.com/@messyfounder),
-[**Instagram**](https://instagram.com/sunilsandhu). You can also
-subscribe to our [**weekly
-newsletter**](https://newsletter.plainenglish.io/).
+If you want to show some love, please take a moment to **follow me on** [**LinkedIn**](https://linkedin.com/in/sunilsandhu)**,** [**TikTok**](https://tiktok.com/@messyfounder), [**Instagram**](https://instagram.com/sunilsandhu). You can also subscribe to our [**weekly newsletter**](https://newsletter.plainenglish.io/).
 
 And before you go, don't forget to **clap** and **follow** the writer️!
-::::::::By [Kyle Jones](https://medium.com/@kyle-t-jones) on
-[October 6, 2025](https://medium.com/p/0e58e8803b03).
-
-[Canonical
-link](https://medium.com/@kyle-t-jones/clustering-12-000-power-plants-finding-natural-groups-in-energy-data-0e58e8803b03)
-
-Exported from [Medium](https://medium.com) on November 10, 2025.
