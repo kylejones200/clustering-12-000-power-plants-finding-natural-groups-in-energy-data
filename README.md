@@ -1,7 +1,7 @@
 # Clustering 12 000 Power Plants Finding Natural Groups in Energy Data
 
-**Published:** 2025-10-06
-**Medium:** [https://medium.com/@kyle-t-jones/clustering-12-000-power-plants-finding-natural-groups-in-energy-data-0e58e8803b03](https://medium.com/@kyle-t-jones/clustering-12-000-power-plants-finding-natural-groups-in-energy-data-0e58e8803b03)
+Published: 2025-10-06
+Medium: [https://medium.com/@kyle-t-jones/clustering-12-000-power-plants-finding-natural-groups-in-energy-data-0e58e8803b03](https://medium.com/@kyle-t-jones/clustering-12-000-power-plants-finding-natural-groups-in-energy-data-0e58e8803b03)
 
 ## About
 

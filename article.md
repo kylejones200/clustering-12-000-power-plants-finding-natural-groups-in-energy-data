@@ -476,10 +476,10 @@ Operational insights: Best practices from top performers in each cluster can be 
 The methods demonstrated here --- K-Means for speed, GMM for uncertainty, HDBSCAN for flexibility --- provide a comprehensive toolkit for segmenting any complex dataset. Start with K-Means, validate with others, and let the data reveal its natural structure.
 
 ### A message from our Founder
-**Hey,** [**Sunil**](https://linkedin.com/in/sunilsandhu) **here.** I wanted to take a moment to thank you for reading until the end and for being a part of this community.
+Hey, [Sunil](https://linkedin.com/in/sunilsandhu) here. I wanted to take a moment to thank you for reading until the end and for being a part of this community.
 
-Did you know that our team run these publications as a volunteer effort to over 3.5m monthly readers? **We don't receive any funding, we do this to support the community. ❤️**
+Did you know that our team run these publications as a volunteer effort to over 3.5m monthly readers? We don't receive any funding, we do this to support the community. ❤️
 
-If you want to show some love, please take a moment to **follow me on** [**LinkedIn**](https://linkedin.com/in/sunilsandhu)**,** [**TikTok**](https://tiktok.com/@messyfounder), [**Instagram**](https://instagram.com/sunilsandhu). You can also subscribe to our [**weekly newsletter**](https://newsletter.plainenglish.io/).
+If you want to show some love, please take a moment to follow me on [LinkedIn](https://linkedin.com/in/sunilsandhu), [TikTok](https://tiktok.com/@messyfounder), [Instagram](https://instagram.com/sunilsandhu). You can also subscribe to our [weekly newsletter](https://newsletter.plainenglish.io/).
 
-And before you go, don't forget to **clap** and **follow** the writer️!
+And before you go, don't forget to clap and follow the writer️!

@@ -13,13 +13,13 @@ This article demonstrates five clustering methods on 12,613 U.S. power plants, s
 
 ## Why Clustering Matters for Energy
 
-**For Benchmarking:** A coal plant with 0.95 tons CO2/MWh isn't inherently good or bad. But if other coal plants average 1.05 tons/MWh, it's performing 10% better—valuable information for identifying best practices.
+For Benchmarking: A coal plant with 0.95 tons CO2/MWh isn't inherently good or bad. But if other coal plants average 1.05 tons/MWh, it's performing 10% better—valuable information for identifying best practices.
 
-**For Policy:** Not all states should be treated the same. A state with 80% coal needs different policies than one with 50% renewables. Clustering identifies natural policy groups.
+For Policy: Not all states should be treated the same. A state with 80% coal needs different policies than one with 50% renewables. Clustering identifies natural policy groups.
 
-**For Markets:** Understanding which plants compete directly helps with price forecasting and strategic planning. Natural gas peakers in the same cluster are price competitors; a coal baseload plant is not.
+For Markets: Understanding which plants compete directly helps with price forecasting and strategic planning. Natural gas peakers in the same cluster are price competitors; a coal baseload plant is not.
 
-**For Investment:** Due diligence benefits from knowing if a target plant is typical or unusual for its category. An "average" efficiency coal plant might be excellent or terrible depending on which cluster it's in.
+For Investment: Due diligence benefits from knowing if a target plant is typical or unusual for its category. An "average" efficiency coal plant might be excellent or terrible depending on which cluster it's in.
 
 ![Power plant clusters visualization](03_clustering_main.png)
 
@@ -104,7 +104,7 @@ K=6: Silhouette=0.341
 K=7: Silhouette=0.329
 ```
 
-**Interpretation:** The elbow occurs around K=5. Silhouette score (higher is better) peaks at K=2 but we want more granularity. K=5 balances interpretability and cluster quality.
+Interpretation: The elbow occurs around K=5. Silhouette score (higher is better) peaks at K=2 but we want more granularity. K=5 balances interpretability and cluster quality.
 
 ### Training Final Model
 
@@ -163,7 +163,7 @@ These profiles make intuitive sense! The algorithm found natural technology/oper
 
 K-Means assigns each plant to exactly one cluster. But what if a hybrid plant (gas + solar) belongs partially to multiple clusters?
 
-GMM provides **soft clustering**—each plant has a probability of belonging to each cluster.
+GMM provides soft clustering—each plant has a probability of belonging to each cluster.
 
 ```python
 from sklearn.mixture import GaussianMixture
@@ -192,7 +192,7 @@ plants_2023.loc[X.index, 'gmm_cluster'] = gmm_labels
 plants_2023.loc[X.index, 'gmm_probability'] = gmm_probas.max(axis=1)
 ```
 
-**Analyzing Uncertainty:**
+Analyzing Uncertainty:
 
 ```python
 # Find plants with uncertain membership
@@ -234,7 +234,7 @@ HDBSCAN found 7 natural clusters
 Outliers/noise: 423 plants (3.4%)
 ```
 
-**Why More Clusters?**
+Why More Clusters?
 
 HDBSCAN found 7 clusters vs our choice of 5 for K-Means. It split some groups further:
 - Natural gas split into "high-efficiency CCGT" vs "older simple cycle"
@@ -317,7 +317,7 @@ t-SNE shows better cluster separation than PCA—clusters are more visually dist
 
 ## Practical Application 1: Benchmarking
 
-With clusters defined, we can benchmark performance **within peer groups**:
+With clusters defined, we can benchmark performance within peer groups:
 
 ```python
 # For each plant, compare to cluster peers
@@ -446,15 +446,15 @@ For production clustering systems, follow these guidelines. Start simple with K-
 
 Clustering transforms 12,613 individual plants into 5-7 manageable groups. This enables:
 
-**Better benchmarking:** Compare plants to appropriate peers, not the entire fleet. A 5% improvement vs cluster peers is meaningful; vs all plants is not.
+Better benchmarking: Compare plants to appropriate peers, not the entire fleet. A 5% improvement vs cluster peers is meaningful; vs all plants is not.
 
-**Targeted policies:** Design interventions for specific plant types. Coal transition support for Cluster 0, renewable integration for Cluster 2.
+Targeted policies: Design interventions for specific plant types. Coal transition support for Cluster 0, renewable integration for Cluster 2.
 
-**Market intelligence:** Understand competitive landscape. Who are your true competitors? Where are the opportunities?
+Market intelligence: Understand competitive landscape. Who are your true competitors? Where are the opportunities?
 
-**Investment decisions:** Is a target plant typical or unusual for its cluster? Unusual isn't bad—could be better or worse—but needs explanation.
+Investment decisions: Is a target plant typical or unusual for its cluster? Unusual isn't bad—could be better or worse—but needs explanation.
 
-**Operational insights:** Best practices from top performers in each cluster can be shared with others in that cluster (similar technology/constraints).
+Operational insights: Best practices from top performers in each cluster can be shared with others in that cluster (similar technology/constraints).
 
 The methods demonstrated here—K-Means for speed, GMM for uncertainty, HDBSCAN for flexibility—provide a comprehensive toolkit for segmenting any complex dataset. Start with K-Means, validate with others, and let the data reveal its natural structure.
 
@@ -462,7 +462,7 @@ Ready to cluster your own data? The complete code is in the tutorial. Start with
 
 ---
 
-**Clustering** · **Machine Learning** · **Python** · **Data Science** · **Energy**
+Clustering · Machine Learning · Python · Data Science · Energy
 
 ---
 
