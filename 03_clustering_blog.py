@@ -8,8 +8,17 @@ You may need to adjust imports and add necessary dependencies.
 import logging
 import sys
 
+import hdbscan
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.metrics import calinski_harabasz_score, silhouette_score
+from sklearn.mixture import GaussianMixture
+from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import StandardScaler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,9 +29,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 plants = pd.read_parquet("egrid_all_plants_1996-2023.parquet")
 plants_2023 = plants[plants["data_year"] == 2023].copy()
-plants_2023["log_generation"] = np.log1p(
-    plants_2023["Plant annual net generation (MWh)"]
-)
+plants_2023["log_generation"] = np.log1p(plants_2023["Plant annual net generation (MWh)"])
 plants_2023["log_co2"] = np.log1p(plants_2023["Plant annual CO2 emissions (tons)"])
 plants_2023["carbon_intensity"] = (
     plants_2023["Plant annual CO2 emissions (tons)"]
@@ -41,9 +48,6 @@ features = [
 ]
 X = plants_2023[features].dropna()
 logger.info(f"Clustering {len(X):,} plants on {len(features)} features")
-from sklearn.cluster import KMeans
-from sklearn.metrics import calinski_harabasz_score, silhouette_score
-from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
@@ -80,7 +84,6 @@ cluster_profiles = (
 )
 logger.info("\nCluster Profiles:")
 logger.info(cluster_profiles)
-from sklearn.mixture import GaussianMixture
 
 bic_scores = []
 for n in range(2, 11):
@@ -98,17 +101,13 @@ plants_2023.loc[X.index, "gmm_probability"] = gmm_probas.max(axis=1)
 uncertain = plants_2023[plants_2023["gmm_probability"] < 0.7]
 logger.info(f"\nPlants with uncertain cluster membership: {len(uncertain)}")
 logger.info("These plants have characteristics of multiple clusters")
-import hdbscan
 
 hdb = hdbscan.HDBSCAN(min_cluster_size=50, min_samples=10, metric="euclidean")
 hdb_labels = hdb.fit_predict(X_scaled)
 n_clusters = len(set(hdb_labels)) - (1 if -1 in hdb_labels else 0)
 n_noise = list(hdb_labels).count(-1)
 logger.info(f"HDBSCAN found {n_clusters} natural clusters")
-logger.info(
-    f"Outliers/noise: {n_noise} plants ({n_noise / len(hdb_labels) * 100:.1f}%)"
-)
-from sklearn.decomposition import PCA
+logger.info(f"Outliers/noise: {n_noise} plants ({n_noise / len(hdb_labels) * 100:.1f}%)")
 
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X_scaled)
@@ -117,12 +116,10 @@ plants_2023.loc[X.index, "pca2"] = X_pca[:, 1]
 logger.info(f"PC1 explains {pca.explained_variance_ratio_[0] * 100:.1f}% of variance")
 logger.info(f"PC2 explains {pca.explained_variance_ratio_[1] * 100:.1f}% of variance")
 logger.info(f"Total: {pca.explained_variance_ratio_.sum() * 100:.1f}%")
-from sklearn.manifold import TSNE
 
 sample_idx = np.random.choice(len(X_scaled), 2000, replace=False)
 tsne = TSNE(n_components=2, perplexity=30, random_state=42)
 X_tsne = tsne.fit_transform(X_scaled[sample_idx])
-import matplotlib.pyplot as plt
 
 plt.figure(figsize=(14, 6))
 plt.subplot(1, 2, 1)
@@ -187,12 +184,9 @@ state_clusters = state_kmeans.fit_predict(state_profiles_scaled)
 state_profiles["state_cluster"] = state_clusters
 logger.info("\nState Cluster Profiles:")
 for i in range(4):
-    states_in_cluster = state_profiles[
-        state_profiles["state_cluster"] == i
-    ].index.tolist()
+    states_in_cluster = state_profiles[state_profiles["state_cluster"] == i].index.tolist()
     logger.info(f"\nCluster {i}: {', '.join(states_in_cluster)}")
     logger.info(state_profiles[state_profiles["state_cluster"] == i].mean())
-from sklearn.neighbors import NearestNeighbors
 
 
 def find_similar_plants(target_plant_idx, X_scaled, n_neighbors=10):
@@ -210,4 +204,3 @@ for i, (idx, dist) in enumerate(zip(similar_idx, similar_dist), 1):
     logger.info(
         f"{i}. {plant.get('Plant name', 'Unknown')} ({plant.get('Plant state abbreviation', '??')}) - Distance: {dist:.3f}"
     )
-
