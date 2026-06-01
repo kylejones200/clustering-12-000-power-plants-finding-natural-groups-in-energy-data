@@ -11,14 +11,32 @@ Clustering solves this. It automatically groups similar plants together, then we
 
 This article demonstrates five clustering methods on 12,613 U.S. power plants, showing how to find natural groupings, profile clusters, and apply results to real-world problems like benchmarking and policy targeting.
 
-## About
 
-Place the code for this article in this repository.
-The original article export is saved as `article.md`.
 
-## Files
+## Rust performance port
 
-Add your `.ipynb`, `.py`, `.yaml`, `.js`, `.ts`, or other project files here.
+Side-by-side **Python vs Rust** implementation of the numeric hot loop — synthetic plant feature generation. Reference PyO3 benchmark: **see `benchmark_rust.py`** on a release build (local machine; run `benchmark_rust.py` to reproduce).
+
+| Path | Role |
+|------|------|
+| `src/compute_kernel.py` | Python/numpy reference kernel |
+| `rust/core/` | Pure Rust library |
+| `rust/py/` | PyO3 bindings |
+| `rust/bench/` | Standalone CLI benchmark |
+| `benchmark_rust.py` | Python vs Rust timing + correctness check |
+
+```bash
+# Rust-only CLI benchmark
+cd rust && cargo run --release -p clustering_12_000_power_plants_finding_natural_groups_in_energy_data_bench
+
+# Python vs Rust (PyO3)
+pip install maturin numpy
+maturin develop --release -m rust/py/Cargo.toml
+python benchmark_rust.py
+```
+
+Python ML training, solvers, and orchestration stay in Python; Rust targets the numeric hot loops. Stochastic generators validate output shapes; deterministic kernels match at tight floating-point tolerance.
+
 
 ## Disclaimer
 

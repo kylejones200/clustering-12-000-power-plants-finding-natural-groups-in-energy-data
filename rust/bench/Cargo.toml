@@ -1,0 +1,13 @@
+[package]
+name = "clustering_12_000_power_plants_finding_natural_groups_in_energy_data_bench"
+description = "Standalone Rust benchmark (no Python)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "bench"
+path = "src/main.rs"
+
+[dependencies]
+clustering_12_000_power_plants_finding_natural_groups_in_energy_data_core = { path = "../core" }

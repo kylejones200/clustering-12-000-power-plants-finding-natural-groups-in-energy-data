@@ -1,0 +1,15 @@
+[package]
+name = "clustering_12_000_power_plants_finding_natural_groups_in_energy_data_rs"
+description = "Python bindings (PyO3) for clustering_12_000_power_plants_finding_natural_groups_in_energy_data_core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "clustering_12_000_power_plants_finding_natural_groups_in_energy_data_rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+clustering_12_000_power_plants_finding_natural_groups_in_energy_data_core = { path = "../core" }
+pyo3 = { version = "0.28", features = ["extension-module"] }
+numpy = "0.28"
